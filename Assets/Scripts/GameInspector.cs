@@ -7,6 +7,7 @@ public class GameInspector : MonoBehaviour
     private int SCREEN_WIDTH = 91;//1920 pixeles, 90 unidades
     private int SCREEN_HEIGHT = 51;
     public GameObject mouseImput;
+    public GameObject menu;
     public GameObject[] gameObject;
     public GameObject[][] gameObject2;
     public int mouseX;
@@ -52,7 +53,15 @@ public class GameInspector : MonoBehaviour
             else
                 Debug.Log("fuera de rango.");
         }
-            
+        if (Input.GetKeyDown("escape"))
+        {
+            if (menu.active == true)
+            {
+                menu.SetActive(false);
+            }
+            else 
+                menu.SetActive(true);
+        }
 
     }
 }
