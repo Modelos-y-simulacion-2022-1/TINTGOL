@@ -34,6 +34,7 @@ public class GameInspector : MonoBehaviour
                 }
             }
         }
+        Cursor.visible = false;
     }
 
     // Update is called once per frame
@@ -59,7 +60,19 @@ public class GameInspector : MonoBehaviour
             
 
         if (Input.GetMouseButtonDown(1))
-            Debug.Log("Pressed secondary button.");
+        {
+            if (mouseX > 0 && mouseX <= 1920 && mouseY > 0 && mouseY <= 1080)
+            {
+                Debug.Log("Pressed secundary button.");
+                Debug.Log((int)Mathf.Floor(worldPosition.x));
+                Debug.Log((int)Mathf.Floor(worldPosition.y));
+                if ((int)Mathf.Floor(worldPosition.x) > 0 && (int)Mathf.Floor(worldPosition.y) > 0)
+                Destroy(gameObject2[(int)Mathf.Floor(worldPosition.x)][(int)Mathf.Floor(worldPosition.y)]);
+            }
+            else
+                Debug.Log("fuera de rango.");
+        }
+            
 
     }
 }
