@@ -9,7 +9,7 @@ public class GameInspector : MonoBehaviour
     public GameObject mouseImput;
     public GameObject[] gameObject;
     public GameObject[][] gameObject2;
-    public float mouseX;
+    public int mouseX;
     public int mouseY;
     // Start is called before the first frame update
     void Start()
@@ -20,18 +20,8 @@ public class GameInspector : MonoBehaviour
             gameObject2[i]=new GameObject[SCREEN_HEIGHT+1];
             for (int j=0;j< SCREEN_HEIGHT + 1; j++)
             {
-                if ((i + j) % 3 == 0)
-                {
-                    //gameObject2[i][j] = Instantiate(gameObject[0], new Vector3(i, j, 0), Quaternion.identity);
-                }
-                else if ((i + j) % 2 == 0)
-                {
-                   // gameObject2[i][j] = Instantiate(gameObject[1], new Vector3(i, j, 0), Quaternion.identity);
-                }
-                else
-                {
-                    //gameObject2[i][j] = Instantiate(gameObject[2], new Vector3(i, j, 0), Quaternion.identity);
-                }
+                int r= Random.Range(0,6);
+                gameObject2[i][j] = Instantiate(gameObject[r], new Vector3(i, j, 0), Quaternion.identity);
             }
         }
         Cursor.visible = false;
@@ -44,16 +34,12 @@ public class GameInspector : MonoBehaviour
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mouseP);
         mouseX = (int)Mathf.Floor(worldPosition.x);     
         mouseY = (int)Mathf.Floor(worldPosition.y);
-        mouseImput.transform.position =new Vector3((int)Mathf.Floor(worldPosition.x), (int)Mathf.Floor(worldPosition.y), 0);
+        mouseImput.transform.position =new Vector3(mouseX, mouseY, -1);//mouse que se mueve de manera discreta
         if (Input.GetMouseButtonDown(0))
         {
-            if (mouseX >= 0 && mouseX <= 1920 && mouseY >= 0 && mouseY <= 1080) {
-                Debug.Log("Pressed primary button."); 
-                Debug.Log((int)Mathf.Floor(worldPosition.x));
-                Debug.Log((int)Mathf.Floor(worldPosition.y));
-                if((int)Mathf.Floor(worldPosition.x)>=0&& (int)Mathf.Floor(worldPosition.x) <= SCREEN_WIDTH && (int)Mathf.Floor(worldPosition.y) <= SCREEN_HEIGHT && (int)Mathf.Floor(worldPosition.y)>=0)
-                    gameObject2[(int)Mathf.Floor(worldPosition.x)][(int)Mathf.Floor(worldPosition.y)] = Instantiate(gameObject[0], new Vector3(Mathf.Floor(worldPosition.x), Mathf.Floor(worldPosition.y), 0), Quaternion.identity);
-            }
+
+            if (mouseX >= 0 && mouseX <= SCREEN_WIDTH && mouseY <= SCREEN_HEIGHT && mouseY >= 0)
+                gameObject2[mouseX][mouseY] = Instantiate(gameObject[0], new Vector3(mouseX,mouseY, 0), Quaternion.identity);
             else
                 Debug.Log("fuera de rango.");
         }
@@ -61,14 +47,8 @@ public class GameInspector : MonoBehaviour
 
         if (Input.GetMouseButtonDown(1))
         {
-            if (mouseX >= 0 && mouseX <= 1920 && mouseY >= 0 && mouseY <= 1080)
-            {
-                Debug.Log("Pressed secundary button.");
-                Debug.Log((int)Mathf.Floor(worldPosition.x));
-                Debug.Log((int)Mathf.Floor(worldPosition.y));
-                if ((int)Mathf.Floor(worldPosition.x) > 0 && (int)Mathf.Floor(worldPosition.x) <=SCREEN_WIDTH && (int)Mathf.Floor(worldPosition.y) <= SCREEN_HEIGHT && (int)Mathf.Floor(worldPosition.y) > 0)
-                        Destroy(gameObject2[(int)Mathf.Floor(worldPosition.x)][(int)Mathf.Floor(worldPosition.y)]);
-            }
+            if (mouseX >= 0 && mouseX <= SCREEN_WIDTH && mouseY <= SCREEN_HEIGHT && mouseY >= 0)
+                Destroy(gameObject2[mouseX][mouseY]);
             else
                 Debug.Log("fuera de rango.");
         }
