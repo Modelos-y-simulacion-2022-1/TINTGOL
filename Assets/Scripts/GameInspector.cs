@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class GameInspector : MonoBehaviour
 {
-    private int SCREEN_WIDTH = 90;//1920 pixeles, 90 unidades
-    private int SCREEN_HEIGHT = 50;
+    private int SCREEN_WIDTH = 91;//1920 pixeles, 90 unidades
+    private int SCREEN_HEIGHT = 51;
     public GameObject mouseImput;
     public GameObject[] gameObject;
     public GameObject[][] gameObject2;
@@ -47,11 +47,11 @@ public class GameInspector : MonoBehaviour
         mouseImput.transform.position =new Vector3((int)Mathf.Floor(worldPosition.x), (int)Mathf.Floor(worldPosition.y), 0);
         if (Input.GetMouseButtonDown(0))
         {
-            if (mouseX > 0 && mouseX <= 1920 && mouseY > 0 && mouseY <= 1080) {
+            if (mouseX >= 0 && mouseX <= 1920 && mouseY >= 0 && mouseY <= 1080) {
                 Debug.Log("Pressed primary button."); 
                 Debug.Log((int)Mathf.Floor(worldPosition.x));
                 Debug.Log((int)Mathf.Floor(worldPosition.y));
-                if((int)Mathf.Floor(worldPosition.x)>0&& (int)Mathf.Floor(worldPosition.y)>0)
+                if((int)Mathf.Floor(worldPosition.x)>=0&& (int)Mathf.Floor(worldPosition.x) <= SCREEN_WIDTH && (int)Mathf.Floor(worldPosition.y) <= SCREEN_HEIGHT && (int)Mathf.Floor(worldPosition.y)>=0)
                     gameObject2[(int)Mathf.Floor(worldPosition.x)][(int)Mathf.Floor(worldPosition.y)] = Instantiate(gameObject[0], new Vector3(Mathf.Floor(worldPosition.x), Mathf.Floor(worldPosition.y), 0), Quaternion.identity);
             }
             else
@@ -61,13 +61,13 @@ public class GameInspector : MonoBehaviour
 
         if (Input.GetMouseButtonDown(1))
         {
-            if (mouseX > 0 && mouseX <= 1920 && mouseY > 0 && mouseY <= 1080)
+            if (mouseX >= 0 && mouseX <= 1920 && mouseY >= 0 && mouseY <= 1080)
             {
                 Debug.Log("Pressed secundary button.");
                 Debug.Log((int)Mathf.Floor(worldPosition.x));
                 Debug.Log((int)Mathf.Floor(worldPosition.y));
-                if ((int)Mathf.Floor(worldPosition.x) > 0 && (int)Mathf.Floor(worldPosition.y) > 0)
-                Destroy(gameObject2[(int)Mathf.Floor(worldPosition.x)][(int)Mathf.Floor(worldPosition.y)]);
+                if ((int)Mathf.Floor(worldPosition.x) > 0 && (int)Mathf.Floor(worldPosition.x) <=SCREEN_WIDTH && (int)Mathf.Floor(worldPosition.y) <= SCREEN_HEIGHT && (int)Mathf.Floor(worldPosition.y) > 0)
+                        Destroy(gameObject2[(int)Mathf.Floor(worldPosition.x)][(int)Mathf.Floor(worldPosition.y)]);
             }
             else
                 Debug.Log("fuera de rango.");
