@@ -7,25 +7,36 @@ public class GameInspector : MonoBehaviour
     private int SCREEN_WIDTH = 91;//1920 pixeles, 90 unidades
     private int SCREEN_HEIGHT = 51;
     public GameObject mouseImput;
+    public GameObject inspector;
     public GameObject menu;
     public GameObject[] gameObject;
-    public GameObject[][] gameObject2;
+    public GameObject[][] ground, water;
     public int mouseX;
     public int mouseY;
+    public int[,] map;
     // Start is called before the first frame update
     void Start()
     {
-        gameObject2 = new GameObject[SCREEN_WIDTH+1][];
-        for (int i=0;i<gameObject2.Length;i++)
+        ground = new GameObject[SCREEN_WIDTH + 1][];
+        water = new GameObject[SCREEN_WIDTH + 1][];
+        for (int i=0;i< ground.Length;i++)
         {
-            gameObject2[i]=new GameObject[SCREEN_HEIGHT+1];
+            ground[i]=new GameObject[SCREEN_HEIGHT + 1];
+            water[i] = new GameObject[SCREEN_HEIGHT + 1];
+            map = inspector.GetComponent<MapGenerator>().GenerateMap();
             for (int j=0;j< SCREEN_HEIGHT + 1; j++)
             {
+                if(map[i,j]==0)
+                ground[i][j] = Instantiate(gameObject[0], new Vector3(i, j, 0), Quaternion.identity);
+                else
+                    ground[i][j] = Instantiate(gameObject[1], new Vector3(i, j, 0), Quaternion.identity);
                 int r= Random.Range(0,6);
-                gameObject2[i][j] = Instantiate(gameObject[r], new Vector3(i, j, 0), Quaternion.identity);
             }
         }
         Cursor.visible = false;
+        menu.SetActive(false);
+        setCellvalueComplex(ground);
+        setCellvalueComplex(ground);
     }
 
     // Update is called once per frame
@@ -38,9 +49,13 @@ public class GameInspector : MonoBehaviour
         mouseImput.transform.position =new Vector3(mouseX, mouseY, -1);//mouse que se mueve de manera discreta
         if (Input.GetMouseButtonDown(0))
         {
-
             if (mouseX >= 0 && mouseX <= SCREEN_WIDTH && mouseY <= SCREEN_HEIGHT && mouseY >= 0)
-                gameObject2[mouseX][mouseY] = Instantiate(gameObject[0], new Vector3(mouseX,mouseY, 0), Quaternion.identity);
+            {
+                water[mouseX][mouseY] = Instantiate(gameObject[1], new Vector3(mouseX, mouseY, -3), Quaternion.identity);
+                water[mouseX][mouseY].GetComponent<Water>().setAmount(20);
+                //water[mouseX][mouseY].GetComponent<Water>().water(water, mouseX, mouseY);
+                
+            }
             else
                 Debug.Log("fuera de rango.");
         }
@@ -49,7 +64,7 @@ public class GameInspector : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             if (mouseX >= 0 && mouseX <= SCREEN_WIDTH && mouseY <= SCREEN_HEIGHT && mouseY >= 0)
-                Destroy(gameObject2[mouseX][mouseY]);
+                Destroy(water[mouseX][mouseY]);
             else
                 Debug.Log("fuera de rango.");
         }
@@ -62,6 +77,89 @@ public class GameInspector : MonoBehaviour
             else 
                 menu.SetActive(true);
         }
-
+        checkWater();
     }
+    void setCellvalue(GameObject[][] ground)
+    {
+        for (int i = 0; i < ground.Length; i++)
+        {
+            for (int j = 0; j < ground[i].Length; j++)
+            {
+                if (ground[i][j]!=null)
+                {
+                    
+                    if (ground[i][j].GetComponent<Water>() != null)
+                    {
+                        int numNeigh = ground[i][j].GetComponent<Water>().neighbourVerify<Water>(ground, i, j);
+                        if (numNeigh < 4)
+                            ground[i][j].GetComponent<Water>().setAmount(0);
+                        else if (numNeigh <7)
+                            ground[i][j].GetComponent<Water>().setAmount(1);
+                        else
+                            ground[i][j].GetComponent<Water>().setAmount(2);
+                    }
+                    else
+                    {
+                        int numNeigh = ground[i][j].GetComponent<Ground>().neighbourVerify<Ground>(ground, i, j);
+                        if (numNeigh < 4)
+                            ground[i][j].GetComponent<Ground>().setDepth(0);
+                        else if (numNeigh < 7)
+                            ground[i][j].GetComponent<Ground>().setDepth(1);
+                        else
+                            ground[i][j].GetComponent<Ground>().setDepth(2);
+                    }
+                }
+            }
+        }
+    }//basico
+    void setCellvalueComplex(GameObject[][] ground)
+    {
+        for (int i = 0; i < ground.Length; i++)
+        {
+            for (int j = 0; j < ground[i].Length; j++)
+            {
+                if (ground[i][j] != null)
+                {
+                    
+                    if ((ground[i][j].GetComponent<Water>())as Water != null)
+                    {
+                        int numNeigh = ground[i][j].GetComponent<Water>().neighbourVerifySameAmount<Water>(ground, i, j);
+                        if (numNeigh < 4)
+                            ground[i][j].GetComponent<Water>().setAmount(0);
+                        else if (numNeigh < 6)
+                            ground[i][j].GetComponent<Water>().setAmount(1);
+                        else
+                            ground[i][j].GetComponent<Water>().setAmount(2);
+                    }
+                    else
+                    {
+                        int numNeigh = ground[i][j].GetComponent<Ground>().neighbourVerifySameDepth<Ground>(ground, i, j);
+                        if (numNeigh < 4)
+                            ground[i][j].GetComponent<Ground>().setDepth(0);
+                        else if (numNeigh < 7)
+                            ground[i][j].GetComponent<Ground>().setDepth(1);
+                        else
+                            ground[i][j].GetComponent<Ground>().setDepth(2);
+                    }
+                }
+            }
+        }
+    }//basico
+    void checkWater()
+    {
+        int cont = 0;
+        for (int i = 0; i < water.Length; i++)
+        {
+            cont++;
+            for (int j = 0; j < water[i].Length; j++)
+            {
+                cont++;
+                if (water[i][j] != null)
+                {
+                    water[i][j].GetComponent<Water>().water(water,i,j,cont%4);
+                }
+            }
+        }
+    }
+
 }

@@ -54,6 +54,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\GameInspector.cs" />
+    <Compile Include="Assets\Scripts\Water.cs" />
+    <Compile Include="Assets\Scripts\Cell.cs" />
+    <Compile Include="Assets\Scripts\MapGenerator.cs" />
+    <Compile Include="Assets\Scripts\Ground.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
