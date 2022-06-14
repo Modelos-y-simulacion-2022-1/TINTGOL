@@ -14,15 +14,20 @@ public class GameInspector : MonoBehaviour
     public int mouseX;
     public int mouseY;
     public int[,] map;
+    //mas variables 
+    public string seed;
+    bool x ;
     // Start is called before the first frame update
     void Start()
     {
+        x = false;
         ground = new GameObject[SCREEN_WIDTH + 1][];
         water = new GameObject[SCREEN_WIDTH + 1][];
         for (int i=0;i< ground.Length;i++)
         {
             ground[i]=new GameObject[SCREEN_HEIGHT + 1];
             water[i] = new GameObject[SCREEN_HEIGHT + 1];
+            inspector.GetComponent<MapGenerator>().seed=seed;
             map = inspector.GetComponent<MapGenerator>().GenerateMap();
             for (int j=0;j< SCREEN_HEIGHT + 1; j++)
             {
@@ -38,15 +43,64 @@ public class GameInspector : MonoBehaviour
         setCellvalueComplex(ground);
         setCellvalueComplex(ground);
     }
+    public void ReStartComplex()
+    {
+        seed = Random.Range(0, 100).ToString();
+        inspector.GetComponent<MapGenerator>().seed=seed;
+        map = inspector.GetComponent<MapGenerator>().GenerateMap();
+        for (int i = 0; i < ground.Length; i++)
+        {
+            for (int j = 0; j < SCREEN_HEIGHT + 1; j++)
+            {
+                Destroy(ground[i][j]);
+                if (map[i, j] == 0)
+                {
+                    ground[i][j] = Instantiate(gameObject[0], new Vector3(i, j, 0), Quaternion.identity);
+                }
 
+                else
+                {
+                    ground[i][j] = Instantiate(gameObject[1], new Vector3(i, j, 0), Quaternion.identity);
+                }
+                Destroy(water[i][j]);
+            }
+        }
+        setCellvalueComplex(ground);
+        setCellvalueComplex(ground);
+    }
+    public void ReStart()
+    {
+        seed = Random.Range(0, 100).ToString();
+        inspector.GetComponent<MapGenerator>().seed = seed;
+        map = inspector.GetComponent<MapGenerator>().GenerateMap();
+        for (int i = 0; i < ground.Length; i++)
+        {
+            for (int j = 0; j < SCREEN_HEIGHT + 1; j++)
+            {
+                Destroy(ground[i][j]);
+                if (map[i, j] == 0)
+                {
+                    ground[i][j] = Instantiate(gameObject[0], new Vector3(i, j, 0), Quaternion.identity);
+                }
+
+                else
+                {
+                    ground[i][j] = Instantiate(gameObject[1], new Vector3(i, j, 0), Quaternion.identity);
+                }
+                Destroy(water[i][j]);
+            }
+        }
+        setCellvalue(ground);
+    }
     // Update is called once per frame
     void Update()
     {
         Vector3 mouseP = Input.mousePosition;
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mouseP);
-        mouseX = (int)Mathf.Floor(worldPosition.x);     
+        mouseX = (int)Mathf.Floor(worldPosition.x);
         mouseY = (int)Mathf.Floor(worldPosition.y);
-        mouseImput.transform.position =new Vector3(mouseX, mouseY, -1);//mouse que se mueve de manera discreta
+
+        mouseImput.transform.position = new Vector3(mouseX, mouseY, -4);//mouse que se mueve de manera discreta
         if (Input.GetMouseButtonDown(0))
         {
             if (mouseX >= 0 && mouseX <= SCREEN_WIDTH && mouseY <= SCREEN_HEIGHT && mouseY >= 0)
@@ -54,17 +108,21 @@ public class GameInspector : MonoBehaviour
                 water[mouseX][mouseY] = Instantiate(gameObject[1], new Vector3(mouseX, mouseY, -3), Quaternion.identity);
                 water[mouseX][mouseY].GetComponent<Water>().setAmount(20);
                 //water[mouseX][mouseY].GetComponent<Water>().water(water, mouseX, mouseY);
-                
+                x = false;
             }
             else
                 Debug.Log("fuera de rango.");
         }
-            
+
 
         if (Input.GetMouseButtonDown(1))
         {
             if (mouseX >= 0 && mouseX <= SCREEN_WIDTH && mouseY <= SCREEN_HEIGHT && mouseY >= 0)
-                Destroy(water[mouseX][mouseY]);
+            {
+                water[mouseX][mouseY] = Instantiate(gameObject[1], new Vector3(mouseX, mouseY, -3), Quaternion.identity);
+                water[mouseX][mouseY].GetComponent<Water>().setAmount(3);
+                x = true;
+            }
             else
                 Debug.Log("fuera de rango.");
         }
@@ -74,9 +132,23 @@ public class GameInspector : MonoBehaviour
             {
                 menu.SetActive(false);
             }
-            else 
+            else
                 menu.SetActive(true);
         }
+        if (Input.GetKeyDown("r"))
+        {
+            ReStart();
+        }
+        if (Input.GetKeyDown("t"))
+        {
+            ReStartComplex();
+        }
+
+        if (x == false)
+        {
+            checkWater();
+        }
+
         checkWater();
     }
     void setCellvalue(GameObject[][] ground)
@@ -157,6 +229,22 @@ public class GameInspector : MonoBehaviour
                 if (water[i][j] != null)
                 {
                     water[i][j].GetComponent<Water>().water(water,i,j,cont%4);
+                }
+            }
+        }
+    }
+    void checkWater1()
+    {
+        int cont = 0;
+        for (int i = 0; i < water.Length; i++)
+        {
+            cont++;
+            for (int j = 0; j < water[i].Length; j++)
+            {
+                cont++;
+                if (water[i][j] != null)
+                {
+                    water[i][j].GetComponent<Water>().water1(water, i, j);
                 }
             }
         }

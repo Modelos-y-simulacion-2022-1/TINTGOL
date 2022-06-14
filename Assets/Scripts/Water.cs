@@ -123,24 +123,24 @@ public class Water : Cell
             {
                 waterIC(cells, x, y, -1, 0);
                 waterIC(cells, x, y, 1, 0);
-                waterIC(cells, x, y, 0, 1);
                 waterIC(cells, x, y, 0, -1);
-                
+                waterIC(cells, x, y, 0, 1);
+
             }
             else if (mod == 2)
             {
                 waterIC(cells, x, y, 1, 0);
-                waterIC(cells, x, y, -1, 0);
                 waterIC(cells, x, y, 0, 1);
                 waterIC(cells, x, y, 0, -1);
-                
+                waterIC(cells, x, y, -1, 0);                
+
             }
             else
             {
                 waterIC(cells, x, y, 0, 1);
                 waterIC(cells, x, y, 0, -1);
-                waterIC(cells, x, y, -1, 0);
                 waterIC(cells, x, y, 1, 0);
+                waterIC(cells, x, y, -1, 0);
             }
 
           
