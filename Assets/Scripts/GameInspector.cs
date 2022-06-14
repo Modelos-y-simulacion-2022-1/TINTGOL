@@ -70,6 +70,7 @@ public class GameInspector : MonoBehaviour
     }
     public void ReStart()
     {
+
         seed = Random.Range(0, 100).ToString();
         inspector.GetComponent<MapGenerator>().seed = seed;
         map = inspector.GetComponent<MapGenerator>().GenerateMap();
