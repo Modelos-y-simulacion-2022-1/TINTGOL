@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameInspector : MonoBehaviour
@@ -129,12 +127,7 @@ public class GameInspector : MonoBehaviour
 		}
 		if (Input.GetKeyDown("escape"))
 		{
-			if (menu.active == true)
-			{
-				menu.SetActive(false);
-			}
-			else
-				menu.SetActive(true);
+			menu.SetActive(!menu.activeSelf);
 		}
 		if (Input.GetKeyDown("r"))
 		{
