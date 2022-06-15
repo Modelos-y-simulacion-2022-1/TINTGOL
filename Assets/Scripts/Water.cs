@@ -94,6 +94,13 @@ public class Water : Cell
 	}
 	void waterIC(GameObject[][] cells, int x, int y, int xincrease, int yincrease)
 	{
+		int new_x = x + xincrease;
+		int new_y = y + yincrease;
+
+		// Chech if out of bounds
+		if (new_x < 0 || new_x >= cells.Length || new_y < 0 || new_y >= cells[0].Length)
+			return;
+
 		if (cells[x + xincrease][y + yincrease] == null)
 		{
 			waterInstantiate(cells, x, y, xincrease, yincrease);
