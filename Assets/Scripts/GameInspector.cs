@@ -29,11 +29,7 @@ public class GameInspector : MonoBehaviour
 			map = inspector.GetComponent<MapGenerator>().GenerateMap();
 			for (int j = 0; j < SCREEN_HEIGHT + 1; j++)
 			{
-				if (map[i, j] == 0)
-					ground[i][j] = Instantiate(gameObject[0], new Vector3(i, j, 0), Quaternion.identity);
-				else
-					ground[i][j] = Instantiate(gameObject[1], new Vector3(i, j, 0), Quaternion.identity);
-				int r = Random.Range(0, 6);
+				this.InstantiateGroundAt(i, j);
 			}
 		}
 		Cursor.visible = false;
@@ -41,28 +37,36 @@ public class GameInspector : MonoBehaviour
 		setCellvalueComplex(ground);
 		setCellvalueComplex(ground);
 	}
-	public void ReStartComplex()
+
+	void InstantiateGroundAt(int x, int y)
 	{
-		seed = Random.Range(0, 100).ToString();
-		inspector.GetComponent<MapGenerator>().seed = seed;
-		map = inspector.GetComponent<MapGenerator>().GenerateMap();
+		// index should be zero when the map at [i, j] is zero
+		// otherwise, index should be one
+		int index = System.Convert.ToInt32(map[x, y] != 0);
+		ground[x][y] = Instantiate(gameObject[index], new Vector3(x, y, 0), Quaternion.identity);
+	}
+
+	void DestroyAll()
+	{
 		for (int i = 0; i < ground.Length; i++)
 		{
 			for (int j = 0; j < SCREEN_HEIGHT + 1; j++)
 			{
 				Destroy(ground[i][j]);
-				if (map[i, j] == 0)
-				{
-					ground[i][j] = Instantiate(gameObject[0], new Vector3(i, j, 0), Quaternion.identity);
-				}
-
-				else
-				{
-					ground[i][j] = Instantiate(gameObject[1], new Vector3(i, j, 0), Quaternion.identity);
-				}
+				InstantiateGroundAt(i, j);
 				Destroy(water[i][j]);
 			}
 		}
+	}
+
+	public void ReStartComplex()
+	{
+		seed = Random.Range(0, 100).ToString();
+		inspector.GetComponent<MapGenerator>().seed = seed;
+		map = inspector.GetComponent<MapGenerator>().GenerateMap();
+
+		DestroyAll();
+
 		setCellvalueComplex(ground);
 		setCellvalueComplex(ground);
 	}
@@ -72,23 +76,9 @@ public class GameInspector : MonoBehaviour
 		seed = Random.Range(0, 100).ToString();
 		inspector.GetComponent<MapGenerator>().seed = seed;
 		map = inspector.GetComponent<MapGenerator>().GenerateMap();
-		for (int i = 0; i < ground.Length; i++)
-		{
-			for (int j = 0; j < SCREEN_HEIGHT + 1; j++)
-			{
-				Destroy(ground[i][j]);
-				if (map[i, j] == 0)
-				{
-					ground[i][j] = Instantiate(gameObject[0], new Vector3(i, j, 0), Quaternion.identity);
-				}
 
-				else
-				{
-					ground[i][j] = Instantiate(gameObject[1], new Vector3(i, j, 0), Quaternion.identity);
-				}
-				Destroy(water[i][j]);
-			}
-		}
+		DestroyAll();
+
 		setCellvalue(ground);
 	}
 	// Update is called once per frame
