@@ -101,20 +101,18 @@ public class Water : Cell
 		if (new_x < 0 || new_x >= cells.Length || new_y < 0 || new_y >= cells[0].Length)
 			return;
 
-		if (cells[x + xincrease][y + yincrease] == null)
+		if (cells[new_x][new_y] == null)
 		{
 			waterInstantiate(cells, x, y, xincrease, yincrease);
 			cells[x][y].GetComponent<Water>().setAmount(cells[x][y].GetComponent<Water>().amount - 1);
 		}
-		else
+		else if (cells[new_x][new_y].GetComponent<Water>().amount < this.amount)
 		{
-			if (cells[x + xincrease][y + yincrease].GetComponent<Water>().amount < this.amount)
-			{
-				cells[x + xincrease][y + yincrease].GetComponent<Water>().setAmount(cells[x + xincrease][y + yincrease].GetComponent<Water>().amount + 1);
-				cells[x][y].GetComponent<Water>().setAmount(cells[x][y].GetComponent<Water>().amount - 1);
-			}
+			cells[new_x][new_y].GetComponent<Water>().setAmount(cells[new_x][new_y].GetComponent<Water>().amount + 1);
+			cells[x][y].GetComponent<Water>().setAmount(cells[x][y].GetComponent<Water>().amount - 1);
 		}
 	}
+
 	public void water(GameObject[][] cells, int x, int y, int mod)
 	{
 		if (amount > 1)
@@ -156,7 +154,5 @@ public class Water : Cell
 			Debug.Log("water2" + cells[x][y].GetComponent<Water>().amount);
 		}
 	}
-
-
 
 }
