@@ -67,6 +67,8 @@ public class GameInspector : MonoBehaviour
 
 		DestroyAll();
 
+
+		// FIXME: Do we really need to call this function twice?
 		setCellvalueComplex(ground);
 		setCellvalueComplex(ground);
 	}
